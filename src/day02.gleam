@@ -12,12 +12,25 @@ pub fn solve() {
   |> solve_part1()
   |> int.to_string()
   |> fn(result) { io.println("Part1: " <> result) }
+
+  contents
+  |> string.split("\n")
+  |> solve_part2()
+  |> int.to_string()
+  |> fn(result) { io.println("Part2: " <> result) }
 }
 
 fn solve_part1(lines) {
   lines
   |> list.map(parse_dims)
   |> list.map(required_wrap)
+  |> list.fold(0, fn(acc, i) { acc + i })
+}
+
+fn solve_part2(lines) {
+  lines
+  |> list.map(parse_dims)
+  |> list.map(ribbon_len)
   |> list.fold(0, fn(acc, i) { acc + i })
 }
 
@@ -40,4 +53,12 @@ fn required_wrap(dims) {
   let hl = h * l
   let extra = int.min(wh, wl) |> int.min(hl)
   { 2 * wh } + { 2 * wl } + { 2 * hl } + extra
+}
+
+fn ribbon_len(dims) {
+  let #(w, h, l) = dims
+  let ribbon = h * w * l
+  let extra = int.min(w + h, w + l) |> int.min(h + l)
+
+  ribbon + { 2 * extra }
 }
