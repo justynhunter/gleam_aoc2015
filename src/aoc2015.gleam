@@ -1,5 +1,6 @@
 import argv
 import day01
+import day02
 import gleam/int
 import gleam/io
 
@@ -14,6 +15,7 @@ fn run_day(string day) {
   let assert Ok(day_i) = int.parse(day)
   case day_i {
     1 -> day01.solve()
+    2 -> day02.solve()
     _ -> io.println("day " <> day <> " not done yet")
   }
 }
