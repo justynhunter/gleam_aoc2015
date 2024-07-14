@@ -3,6 +3,7 @@ import gleam/io
 import gleam/list
 import gleam/string
 import simplifile
+import util
 
 pub fn solve() {
   let assert Ok(contents) = simplifile.read("data/day02.txt")
@@ -24,14 +25,14 @@ fn solve_part1(lines) {
   lines
   |> list.map(parse_dims)
   |> list.map(required_wrap)
-  |> list.fold(0, fn(acc, i) { acc + i })
+  |> util.sum
 }
 
 fn solve_part2(lines) {
   lines
   |> list.map(parse_dims)
   |> list.map(ribbon_len)
-  |> list.fold(0, fn(acc, i) { acc + i })
+  |> util.sum
 }
 
 fn parse_dims(line) {
