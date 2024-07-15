@@ -1,6 +1,7 @@
 import argv
 import day01
 import day02
+import day03
 import gleam/int
 import gleam/io
 
@@ -16,6 +17,7 @@ fn run_day(string day) {
   case day_i {
     1 -> day01.solve()
     2 -> day02.solve()
+    3 -> day03.solve()
     _ -> io.println("day " <> day <> " not done yet")
   }
 }
