@@ -7,6 +7,14 @@ import simplifile
 type Location =
   #(Int, Int)
 
+type BothLocations =
+  #(Location, Location)
+
+type Turn {
+  Santa
+  RoboSanta
+}
+
 pub fn solve() {
   let assert Ok(contents) = simplifile.read("data/day03.txt")
   contents
@@ -30,12 +38,7 @@ fn solve_part2(instruction) {
   count_houses_robo(instruction, [], Santa, #(#(0, 0), #(0, 0)))
 }
 
-type Turn {
-  Santa
-  RoboSanta
-}
-
-fn count_houses_robo(dirs, history, turn, locs: #(Location, Location)) {
+fn count_houses_robo(dirs, history, turn, locs: BothLocations) {
   let curr = case turn {
     Santa -> locs.0
     RoboSanta -> locs.1
@@ -75,7 +78,7 @@ fn do_move(dir, loc: Location) {
   }
 }
 
-fn update_curr_loc(locs: #(Location, Location), new_loc, turn) {
+fn update_curr_loc(locs: BothLocations, new_loc, turn) {
   case turn {
     Santa -> #(new_loc, locs.1)
     RoboSanta -> #(locs.0, new_loc)
