@@ -4,40 +4,37 @@ import gleam/int
 import gleam/io
 
 pub fn solve() {
-  solve_part1("ckczppom")
+  test_hash(part1_checker, "ckczppom", 0)
   |> int.to_string
-  |> fn(result) { io.println("Part1: " <> result) }
+  |> fn(result) { io.println("Part 1: " <> result) }
 
-  solve_part2("ckczppom")
+  test_hash(part2_checker, "ckczppom", 0)
   |> int.to_string
-  |> fn(result) { io.println("Part2: " <> result) }
+  |> fn(result) { io.println("Part 2: " <> result) }
 }
 
-fn solve_part1(secret) {
-  test_hash(secret, 0)
-}
-
-fn solve_part2(secret) {
-  test_hash2(secret, 0)
-}
-
-fn test_hash(string secret, int num) {
-  let hash = hash(secret <> int.to_string(num))
+fn part1_checker(hash) {
   case hash {
-    <<0x0, 0x0, hex, _:bits>> if hex <= 0x0f -> num
-    _ -> test_hash(secret, num + 1)
+    <<0x0, 0x0, hex, _:bits>> if hex <= 0x0f -> True
+    _ -> False
   }
 }
 
-fn test_hash2(string secret, int num) {
-  let hash = hash(secret <> int.to_string(num))
+fn part2_checker(hash) {
   case hash {
-    <<0x0, 0x0, 0x0, _:bits>> -> num
-    _ -> test_hash2(secret, num + 1)
+    <<0x0, 0x0, 0x0, _:bits>> -> True
+    _ -> False
   }
 }
 
-fn hash(text) {
-  bit_array.from_string(text)
+fn test_hash(checker, secret, num) {
+  bit_array.from_string(secret <> int.to_string(num))
   |> crypto.hash(crypto.Md5, _)
+  |> checker
+  |> fn(is_ok) {
+    case is_ok {
+      True -> num
+      False -> test_hash(checker, secret, num + 1)
+    }
+  }
 }
