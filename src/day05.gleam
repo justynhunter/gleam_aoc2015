@@ -76,26 +76,31 @@ fn solve_part2(lines) {
   |> list.length
 }
 
+type PairCount {
+  PairCount(pair: String, count: Int)
+}
+
 fn has_double_pairs(s) {
   string.split(s, "")
-  |> list.window_by_2
+  |> list.window(2)
+  |> list.map(fn(pair) { string.join(pair, "") })
   // count by letters
-  |> list.fold([], fn(acc: List(#(#(String, String), Int)), i) {
+  |> list.fold([], fn(acc: List(PairCount), i) {
     case acc {
       // adds item to acc if its empty
-      [] -> [#(i, 1)]
+      [] -> [PairCount(i, 1)]
       _ -> {
-        case list.any(acc, fn(a) { a.0 == i }) {
+        case list.any(acc, fn(a) { a.pair == i }) {
           // add pair to acc if it isn't there already
-          False -> [#(i, 1), ..acc]
+          False -> [PairCount(i, 1), ..acc]
           // update count if it does
           True -> {
             let assert Ok(item_to_replace) =
-              list.find(acc, fn(item) { i == item.0 })
+              list.find(acc, fn(item) { i == item.pair })
 
             [
-              #(item_to_replace.0, item_to_replace.1 + 1),
-              ..list.filter(acc, fn(item) { i != item.0 })
+              PairCount(item_to_replace.pair, item_to_replace.count + 1),
+              ..list.filter(acc, fn(item) { i != item.pair })
             ]
           }
         }
@@ -103,13 +108,12 @@ fn has_double_pairs(s) {
     }
   })
   // get ones with a count > 0
-  |> list.filter(fn(t) { t.1 > 1 })
+  |> list.filter(fn(t) { t.count > 1 })
   // just get the pair
-  |> list.map(fn(t) { t.0 })
+  |> list.map(fn(t) { t.pair })
   // check that the pair exists two distinct times
-  |> list.any(fn(t) {
-    string.length(s) - { string.replace(s, t.0 <> t.1, "") |> string.length }
-    >= 4
+  |> list.any(fn(pair) {
+    string.length(s) - { string.replace(s, pair, "") |> string.length } >= 4
   })
 }
 
