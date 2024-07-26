@@ -7,11 +7,17 @@ import simplifile
 pub fn solve() {
   let assert Ok(contents) = simplifile.read("data/day05.txt")
 
-  contents
-  |> string.split("\n")
+  let lines = string.split(contents, "\n")
+
+  lines
   |> solve_part1()
   |> int.to_string
   |> fn(result) { io.println("Part1: " <> result) }
+
+  lines
+  |> solve_part2()
+  |> int.to_string
+  |> fn(result) { io.println("Part2: " <> result) }
 }
 
 fn solve_part1(lines) {
@@ -61,4 +67,29 @@ fn has_no_bad_string(s) {
       _ -> True
     }
   }
+}
+
+fn solve_part2(lines) {
+  lines
+  |> list.filter(has_double_pairs)
+  |> list.filter(has_split_double)
+  |> list.length
+}
+
+fn has_double_pairs(s) {
+  string.split(s, "")
+  |> list.window_by_2
+
+  True
+}
+
+fn has_split_double(s) {
+  string.split(s, "")
+  |> list.window(3)
+  |> list.any(fn(l) {
+    case l {
+      [x, _, z] if x == z -> True
+      _ -> False
+    }
+  })
 }
