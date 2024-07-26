@@ -79,8 +79,38 @@ fn solve_part2(lines) {
 fn has_double_pairs(s) {
   string.split(s, "")
   |> list.window_by_2
+  // count by letters
+  |> list.fold([], fn(acc: List(#(#(String, String), Int)), i) {
+    case acc {
+      // adds item to acc if its empty
+      [] -> [#(i, 1)]
+      _ -> {
+        case list.any(acc, fn(a) { a.0 == i }) {
+          // add pair to acc if it isn't there already
+          False -> [#(i, 1), ..acc]
+          // update count if it does
+          True -> {
+            let assert Ok(item_to_replace) =
+              list.find(acc, fn(item) { i == item.0 })
 
-  True
+            [
+              #(item_to_replace.0, item_to_replace.1 + 1),
+              ..list.filter(acc, fn(item) { i != item.0 })
+            ]
+          }
+        }
+      }
+    }
+  })
+  // get ones with a count > 0
+  |> list.filter(fn(t) { t.1 > 1 })
+  // just get the pair
+  |> list.map(fn(t) { t.0 })
+  // check that the pair exists two distinct times
+  |> list.any(fn(t) {
+    string.length(s) - { string.replace(s, t.0 <> t.1, "") |> string.length }
+    >= 4
+  })
 }
 
 fn has_split_double(s) {
